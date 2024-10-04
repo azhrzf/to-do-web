@@ -1,0 +1,78 @@
+@import "./assets/modifier.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+  background-color: white;
+}
+
+.main__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.main__body {
+  background-color: #f8f8f8;
+}
+
+.todo__wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+.todo__wrapper > * + * {
+  margin-top: 20px;
+}
+
+.todo__wrapper_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.todo__wrapper_item {
+  padding: 20px 20px;
+  border: 0.5px solid #dadada;
+  background-color: white;
+  border-radius: 15px;
+}
+
+.todo__wrapper_item > * + * {
+  margin-top: 6px;
+}
+
+.todo__wrapper_item_checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.todo__wrapper_item_checkbox > * + * {
+  margin-left: 20px;
+}
+
+.todo__wrapper_item_metadata > * + * {
+  margin-top: 4px;
+}

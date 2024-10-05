@@ -10,6 +10,10 @@
   font-size: 14px;
 }
 
+.text-xs {
+  font-size: 10px
+}
+
 .font-semibold {
   font-weight: 600;
 }
@@ -20,5 +24,5 @@
 
 .checkbox-completed {
   font-size: 28px;
-  color: #0b5afa;
+  color: var(--color-primary);
 }

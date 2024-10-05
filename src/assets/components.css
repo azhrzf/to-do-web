@@ -1,0 +1,8 @@
+.label {
+  max-width: min-content;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 4px;
+}

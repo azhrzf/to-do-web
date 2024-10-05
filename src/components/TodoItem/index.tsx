@@ -1,25 +1,27 @@
-import {
-  FaCheckCircle,
-  // FaRegCircle
-} from "react-icons/fa";
+import { type TodoItemTypes } from "@/utils/types";
+import { convertDueDate } from "@/utils/helpers";
+import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
 
-export default function TodoItem() {
+export default function TodoItem({
+  title,
+  description,
+  status,
+  dueDate,
+}: TodoItemTypes) {
+  const { time, isElapsed } = convertDueDate(dueDate);
+
   return (
     <article className="todo__wrapper_item">
       <div className="todo__wrapper_item_checkbox">
-        <h3 className="text-xl line-through">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </h3>
+        <h3 className="text-xl line-through">{title}</h3>
         <div className="checkbox-completed">
-          <FaCheckCircle />
+          {status === "completed" ? <FaCheckCircle /> : <FaRegCircle />}
         </div>
       </div>
       <div className="todo__wrapper_item_metadata">
-        <p className="text-sm color-secondary">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore,
-          maiores natus eius suscipit vel dicta necessitatibus... see more
-        </p>
-        <p className="text-sm">Due: Wednesday, 17 September 2024</p>
+        <p className="label">Folder</p>
+        <p className="text-sm color-secondary">{description}</p>
+        <p className="text-sm font-semibold">Due: {time}</p>
       </div>
     </article>
   );

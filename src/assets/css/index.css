@@ -1,6 +1,6 @@
-@import "./assets/variables.css";
-@import "./assets/modifier.css";
-@import "./assets/components.css";
+@import "./variables.css";
+@import "./modifier.css";
+@import "./components.css";
 
 * {
   margin: 0;
@@ -11,6 +11,11 @@
 body {
   font-family: "Nunito Sans", sans-serif;
   background-color: white;
+}
+
+.wrapper > * > * {
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .main__header {
@@ -31,8 +36,6 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
 }
 
 .main__body {
@@ -40,8 +43,6 @@ body {
 }
 
 .todo__wrapper {
-  max-width: 1280px;
-  margin: 0 auto;
   padding-top: 40px;
 }
 
@@ -77,4 +78,30 @@ body {
 
 .todo__wrapper_item_metadata > * + * {
   margin-top: 4px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .wrapper > * > * {
+    padding: 0 30px;
+  }
+
+  .todo__wrapper_grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .todo__wrapper_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .wrapper > * > * {
+    padding: 0 20px;
+  }
+
+  .todo__wrapper_grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

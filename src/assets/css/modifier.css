@@ -1,5 +1,9 @@
 .color-secondary {
-  color: #4b4b4b;
+  color: var(--color-secondary);
+}
+
+.color-danger {
+  color: var(--color-danger);
 }
 
 .text-xl {
@@ -11,7 +15,7 @@
 }
 
 .text-xs {
-  font-size: 10px
+  font-size: 10px;
 }
 
 .font-semibold {

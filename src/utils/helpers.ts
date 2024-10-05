@@ -5,6 +5,11 @@ interface DueDateResult {
   isElapsed: boolean;
 }
 
+export function getUniqueTime(): string {
+  const date = new Date();
+  return date.getTime().toString();
+}
+
 function getElapsedTime(dueDate: Date, timeNow: Date): string {
   const elapsedTime = timeNow.getTime() - dueDate.getTime();
   return humanizeDuration(elapsedTime, { largest: 1 });

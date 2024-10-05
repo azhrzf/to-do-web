@@ -1,27 +1,37 @@
-import { type TodoItemTypes } from "@/utils/types";
+import { type Todo } from "@/utils/storage/todos";
 import { convertDueDate } from "@/utils/helpers";
 import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
+import clsx from "clsx";
 
 export default function TodoItem({
   title,
   description,
-  status,
+  isCompleted,
   dueDate,
-}: TodoItemTypes) {
+}: Todo) {
   const { time, isElapsed } = convertDueDate(dueDate);
 
   return (
     <article className="todo__wrapper_item">
       <div className="todo__wrapper_item_checkbox">
-        <h3 className="text-xl line-through">{title}</h3>
+        <h3 className={clsx("text-xl", isCompleted && "line-through")}>
+          {title}
+        </h3>
         <div className="checkbox-completed">
-          {status === "completed" ? <FaCheckCircle /> : <FaRegCircle />}
+          {isCompleted ? <FaCheckCircle /> : <FaRegCircle />}
         </div>
       </div>
       <div className="todo__wrapper_item_metadata">
         <p className="label">Folder</p>
         <p className="text-sm color-secondary">{description}</p>
-        <p className="text-sm font-semibold">Due: {time}</p>
+        <p
+          className={clsx(
+            "text-sm font-semibold",
+            !isCompleted && isElapsed && "color-danger"
+          )}
+        >
+          {isCompleted ? "Completed" : `Due: ${time}`}
+        </p>
       </div>
     </article>
   );

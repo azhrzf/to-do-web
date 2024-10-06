@@ -89,3 +89,8 @@ export async function loginUserStorage(loginData: LoginData): Promise<User> {
 export function logoutUserStorage(): void {
   localStorage.removeItem("currentUser");
 }
+
+export function checkLoginStorage(): CurrentUser | null {
+  const item = localStorage.getItem("currentUser");
+  return item ? JSON.parse(item) : null;
+}

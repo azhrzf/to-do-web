@@ -1,0 +1,37 @@
+.todo__wrapper {
+  padding-top: 40px;
+}
+
+.todo__wrapper > * + * {
+  margin-top: 20px;
+}
+
+.todo__wrapper_grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.todo__wrapper_item {
+  padding: 20px 20px;
+  border: 0.5px solid #dadada;
+  background-color: white;
+  border-radius: 15px;
+}
+
+.todo__wrapper_item > * + * {
+  margin-top: 4px;
+}
+
+.todo__wrapper_item_checkbox {
+  display: flex;
+  justify-content: space-between;
+}
+
+.todo__wrapper_item_checkbox > * + * {
+  margin-left: 20px;
+}
+
+.todo__wrapper_item_metadata > * + * {
+  margin-top: 4px;
+}

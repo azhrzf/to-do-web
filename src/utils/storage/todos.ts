@@ -4,22 +4,13 @@ export interface TodoMetadata {
   title: string;
   description: string;
   isCompleted: boolean;
-  dueDate: Date;
-  labelSlug: string;
+  dueDate?: Date;
+  labelId?: string;
   userId: string;
 }
 
 export interface Todo extends TodoMetadata {
   id: string;
-}
-
-export interface TodosContextProps {
-  todos: Todo[];
-  addTodo: (newTodoMetadata: TodoMetadata) => void;
-  updateTodo: (
-    updatedTodoId: string,
-    updatedTodoMetadata: TodoMetadata
-  ) => void;
 }
 
 export function getTodosStorage(): Todo[] {

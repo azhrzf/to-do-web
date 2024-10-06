@@ -3,29 +3,19 @@ import { getUniqueTime } from "../helpers";
 
 export interface LabelMetadata {
   name: string;
-  slug: string;
 }
 
 export interface Label extends LabelMetadata {
   id: string;
 }
 
-export interface LabelsContextProps {
-  labels: Label[];
-  addLabel: (newLabelMetadata: LabelMetadata) => void;
-  updateLabel: (
-    updatedLabelId: string,
-    updatedLabelMetadata: LabelMetadata
-  ) => void;
-}
 
 export function getLabelsStorage(): Label[] {
   const dateNow = new Date();
 
   const newLabel = {
-    id: `label-${dateNow.getTime()}`,
+    id: `no-label-${dateNow.getTime()}`,
     name: "No Label",
-    slug: `no-label-${dateNow.getTime()}`,
   };
 
   if (localStorage.getItem("labels") === null) {
@@ -43,24 +33,23 @@ export function getLabelsStorage(): Label[] {
   return item ? JSON.parse(item) : [newLabel];
 }
 
-function verifySlug(slug: string, labels: Label[]): string {
-  const slugHandler = slugify(slug);
-  if (labels.find((label: Label) => label.slug === slugHandler)) {
-    return `${slugHandler}-${getUniqueTime()}`;
+function verifyId(id: string, labels: Label[]): string {
+  const idHandler = slugify(id, { lower: true });
+  if (labels.find((label: Label) => label.id === idHandler)) {
+    return `${idHandler}-${getUniqueTime()}`;
   }
 
-  return slugHandler;
+  return idHandler;
 }
 
 export function addLabelStorage(newLabelMetadata: LabelMetadata): Label[] {
-  const { name, slug } = newLabelMetadata;
+  const { name } = newLabelMetadata;
   const labels = getLabelsStorage();
-  const verifiedSlug = verifySlug(slug, labels);
+  const verifiedId = verifyId(name, labels);
 
   const newLabel = {
-    id: `label-${getUniqueTime()}`,
+    id: verifiedId,
     name: name.trim(),
-    slug: verifiedSlug,
   };
 
   localStorage.setItem("labels", JSON.stringify([...labels, newLabel]));

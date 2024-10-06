@@ -1,0 +1,29 @@
+.todo__form > * + * {
+  margin-top: 15px;
+}
+
+.todo__form_first {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  column-gap: 15px;
+  align-items: center;
+}
+
+.todo__form_first > :first-child {
+  grid-column: 1 / span 4;
+}
+
+.todo__form_first > :nth-child(2) {
+  grid-column: 5 / span 2;
+}
+
+.todo__form_label {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 15px;
+  align-items: center;
+}
+
+.todo__form_input > * + * {
+  margin-top: 5px;
+}

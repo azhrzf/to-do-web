@@ -1,6 +1,13 @@
-@import "./variables.css";
 @import "./modifier.css";
-@import "./components.css";
+@import "./global.css";
+@import "./components/todo-form.css";
+@import "./components/todo-item.css";
+
+:root {
+  --color-primary: #0b5afa;
+  --color-secondary: #4b4b4b;
+  --color-danger: red;
+}
 
 * {
   margin: 0;
@@ -40,44 +47,6 @@ body {
 
 .main__body {
   background-color: #f8f8f8;
-}
-
-.todo__wrapper {
-  padding-top: 40px;
-}
-
-.todo__wrapper > * + * {
-  margin-top: 20px;
-}
-
-.todo__wrapper_grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-}
-
-.todo__wrapper_item {
-  padding: 20px 20px;
-  border: 0.5px solid #dadada;
-  background-color: white;
-  border-radius: 15px;
-}
-
-.todo__wrapper_item > * + * {
-  margin-top: 4px;
-}
-
-.todo__wrapper_item_checkbox {
-  display: flex;
-  justify-content: space-between;
-}
-
-.todo__wrapper_item_checkbox > * + * {
-  margin-left: 20px;
-}
-
-.todo__wrapper_item_metadata > * + * {
-  margin-top: 4px;
 }
 
 @media only screen and (max-width: 1280px) {

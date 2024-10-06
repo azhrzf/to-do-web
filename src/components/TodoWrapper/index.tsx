@@ -16,7 +16,7 @@ export default function TodoWrapper() {
               description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae repudiandae ad nesciunt optio sequi."
               isCompleted={false}
               dueDate={dummyDate}
-              labelSlug="1"
+              labelId="1"
               userId="1"
             />
           ))}
@@ -33,7 +33,7 @@ export default function TodoWrapper() {
               description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae repudiandae ad nesciunt optio sequi."
               isCompleted={true}
               dueDate={dummyDate}
-              labelSlug="1"
+              labelId="1"
               userId="1"
             />
           ))}

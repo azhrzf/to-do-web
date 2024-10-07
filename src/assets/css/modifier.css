@@ -115,3 +115,7 @@
   -moz-appearance: none;
   appearance: none;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

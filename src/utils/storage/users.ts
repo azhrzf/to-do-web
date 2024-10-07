@@ -9,6 +9,8 @@ export interface UserMetadata {
 
 export interface User extends UserMetadata {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface LoginData {
@@ -22,6 +24,11 @@ export interface CurrentUser {
   email: string;
 }
 
+interface EmailVerification {
+  status: boolean;
+  message: string;
+}
+
 export function getUsersStorage(): User[] {
   if (localStorage.getItem("users") === null) {
     localStorage.setItem("users", JSON.stringify([]));
@@ -30,11 +37,40 @@ export function getUsersStorage(): User[] {
   return item ? JSON.parse(item) : [];
 }
 
+function verifyEmailStorage(email: string, users: User[]): EmailVerification {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    return {
+      status: false,
+      message: "Invalid email format",
+    };
+  }
+
+  if (users.some((user: User) => user.email === email)) {
+    return {
+      status: false,
+      message: "Email already exists",
+    };
+  }
+
+  return {
+    status: true,
+    message: "Email is valid",
+  };
+}
+
 export async function addUserStorage(
   newUserMetadata: UserMetadata
 ): Promise<User[]> {
   const { name, email, passwordHash } = newUserMetadata;
   const users = getUsersStorage();
+  const emailVerification = verifyEmailStorage(email, users);
+
+  if (!emailVerification.status) {
+    throw new Error(emailVerification.message);
+  }
+
   const hashed = await bcrypt.hash(passwordHash, 10);
 
   const newUser = {
@@ -42,6 +78,8 @@ export async function addUserStorage(
     name,
     email,
     passwordHash: hashed,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   localStorage.setItem("users", JSON.stringify([...users, newUser]));
@@ -90,7 +128,32 @@ export function logoutUserStorage(): void {
   localStorage.removeItem("currentUser");
 }
 
-export function checkLoginStorage(): CurrentUser | null {
+export function checkLoginStorage(): CurrentUser {
   const item = localStorage.getItem("currentUser");
-  return item ? JSON.parse(item) : null;
+
+  if (item) {
+    const verifyUsers = getUsersStorage().find(
+      (user: User) => user.id === JSON.parse(item).userId
+    );
+
+    if (verifyUsers) {
+      return {
+        userId: verifyUsers.id,
+        name: verifyUsers.name,
+        email: verifyUsers.email,
+      };
+    }
+  }
+
+  throw new Error("User not found");
+}
+
+export function getCurrentUserStorage(): CurrentUser {
+  const item = localStorage.getItem("currentUser");
+
+  if (item) {
+    return JSON.parse(item);
+  }
+
+  throw new Error("User not found");
 }

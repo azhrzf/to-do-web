@@ -5,28 +5,27 @@ import { sliceDate } from "@/utils/helpers";
 import { Todo } from "@/utils/storage/todos";
 import AddLabel from "../AddLabel";
 
-const UpdateTodo: React.FC<Todo> = (props) => {
+const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
   const appContext = useApp();
   const { todosContext, labelsContext } = appContext;
   const { updateTodo } = todosContext;
   const { labels } = labelsContext;
 
-  const {
-    state: todo,
-    handleChange: handleTodoChange,
-  } = useForm({
-    title: props.title,
-    description: props.description ?? "",
-    dueDate: props.dueDate ? sliceDate(props.dueDate.toString()) : "",
+  const { state: todo, handleChange: handleTodoChange } = useForm({
+    title: updatedTodoProps.title,
+    description: updatedTodoProps.description ?? "",
+    dueDate: updatedTodoProps.dueDate
+      ? sliceDate(updatedTodoProps.dueDate.toString())
+      : "",
   });
 
-  const [selectedLabel, setSelectedLabel] = useState(props.labelId);
+  const [selectedLabel, setSelectedLabel] = useState(updatedTodoProps.labelId);
 
   const handleLabelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLabel(event.target.value);
   };
 
-  const [isCompleted, setIsCompleted] = useState(props.isCompleted);
+  const [isCompleted, setIsCompleted] = useState(updatedTodoProps.isCompleted);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsCompleted(event.target.checked);
@@ -49,7 +48,7 @@ const UpdateTodo: React.FC<Todo> = (props) => {
       userId: "user-1",
     };
 
-    const verifyNewTodo = updateTodo(props.id, todoSubmit);
+    const verifyNewTodo = updateTodo(updatedTodoProps.id, todoSubmit);
 
     if (verifyNewTodo) {
       setMassageSubmit({

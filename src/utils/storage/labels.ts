@@ -6,6 +6,8 @@ export interface LabelMetadata {
 
 export interface Label extends LabelMetadata {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export function getLabelsStorage(): Label[] {
@@ -38,6 +40,8 @@ export function addLabelStorage(newLabelMetadata: LabelMetadata): Label[] {
   const newLabel = {
     id: `label-${getUniqueTime()}`,
     name: name.trim(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   localStorage.setItem("labels", JSON.stringify([...labels, newLabel]));
@@ -51,7 +55,11 @@ export function updateLabelStorage(
 ): Label[] {
   const labels = getLabelsStorage().map((label: Label) => {
     if (label.id === updatedLabelId) {
-      return { ...label, name: newLabelMetadata.name.trim() };
+      return {
+        ...label,
+        name: newLabelMetadata.name.trim(),
+        updatedAt: new Date(),
+      };
     }
     return label;
   });

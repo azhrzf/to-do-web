@@ -1,19 +1,15 @@
-import ToggleCompleted from "./ToggleCompleted";
-import TodoButtons from "./TodoButtons";
-import DueDate from "./DueDate";
+import TodoToggle from "./TodoToggle";
+import DeleteButton from "./TodoButtons/DeleteButton";
+import UpdateButton from "./TodoButtons/UpdateButton";
+import TodoDate from "./TodoDate";
 import { Todo } from "@/utils/storage/todos";
 import { getLabelNameById } from "@/utils/storage/labels";
 import { useApp } from "@/hooks/useApp";
 import clsx from "clsx";
 
-const TodoItem: React.FC<Todo> = ({
-  id,
-  title,
-  description,
-  isCompleted,
-  dueDate,
-  labelId,
-}) => {
+const TodoItem: React.FC<Todo> = (todoProps) => {
+  const { id, title, description, dueDate, labelId, isCompleted } = todoProps;
+
   const appContext = useApp();
   const { todosContext } = appContext;
   const { todos, updateTodo, deleteTodo } = todosContext;
@@ -35,7 +31,7 @@ const TodoItem: React.FC<Todo> = ({
         <h3 className={clsx("text-xl", isCompleted && "line-through")}>
           {title}
         </h3>
-        <ToggleCompleted
+        <TodoToggle
           isTodoCompleted={isCompleted}
           toggleCompleted={() => toggleCompleted(id)}
         />
@@ -43,10 +39,11 @@ const TodoItem: React.FC<Todo> = ({
       <div className="todo__wrapper_item_metadata">
         <span className="label">{getLabelNameById(labelId)}</span>
         <p className="text-sm color-secondary">{description}</p>
-        <DueDate isTodoCompleted={isCompleted} todoDueDate={dueDate} />
+        <TodoDate isTodoCompleted={isCompleted} todoDueDate={dueDate} />
       </div>
-      <div className="todo__wrapper_item_buttons">
-        <TodoButtons deleteTodo={() => deleteTodo(id)} />
+      <div className="todo__wrapper_item_buttons basic-flex">
+        <UpdateButton {...todoProps} />
+        <DeleteButton deleteTodo={() => deleteTodo(id)} />
       </div>
     </article>
   );

@@ -5,7 +5,7 @@ interface DueDateProps {
   todoDueDate?: Date | string;
 }
 
-const DueDate: React.FC<DueDateProps> = ({ isTodoCompleted, todoDueDate }) => {
+const TodoDate: React.FC<DueDateProps> = ({ isTodoCompleted, todoDueDate }) => {
   const { time, isElapsed } = todoDueDate
     ? convertDueDate(new Date(todoDueDate))
     : { time: "", isElapsed: false };
@@ -13,7 +13,11 @@ const DueDate: React.FC<DueDateProps> = ({ isTodoCompleted, todoDueDate }) => {
   const dueValidStyle =
     isTodoCompleted || !isElapsed ? "color-primary" : "color-danger";
 
-  const dueInnerText = todoDueDate
+  const endTime = (time: string): boolean => {
+    return time === "0 seconds";
+  };
+
+  const dueInnerText = todoDueDate && !endTime(time)
     ? `${isElapsed ? "Missed" : "Due"}: ${time}`
     : "No due date";
 
@@ -26,4 +30,4 @@ const DueDate: React.FC<DueDateProps> = ({ isTodoCompleted, todoDueDate }) => {
   );
 };
 
-export default DueDate;
+export default TodoDate;

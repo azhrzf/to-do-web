@@ -2,10 +2,7 @@ import { useState, ReactNode } from "react";
 import { IoMdCloseCircle } from "react-icons/io";
 
 interface DialogWrapperProps {
-  buttonConfig: {
-    name: string;
-    icon: ReactNode;
-  };
+  buttonConfig: ReactNode;
   children: ReactNode;
 }
 
@@ -26,11 +23,10 @@ const DialogWrapper: React.FC<DialogWrapperProps> = ({
   return (
     <div>
       <button
-        className="button-basic primary-link-bg basic-flex-middle"
+        className="button-reset"
         onClick={openDialog}
       >
-        {buttonConfig.icon}
-        <p>{buttonConfig.name}</p>
+        {buttonConfig}
       </button>
       {isDialogOpen && (
         <div className="dialog">

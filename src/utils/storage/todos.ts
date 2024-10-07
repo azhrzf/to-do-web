@@ -11,6 +11,8 @@ export interface TodoMetadata {
 
 export interface Todo extends TodoMetadata {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export function getTodosStorage(): Todo[] {
@@ -33,6 +35,8 @@ export function addTodoStorage(newTodoMetadata: TodoMetadata): Todo[] {
     id: `todo-${getUniqueTime()}`,
     title: newTodoMetadata.title.trim(),
     description: newTodoMetadata.description?.trim(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
@@ -55,6 +59,7 @@ export function updateTodoStorage(
           ...updatedTodoMetadata,
           title: updatedTodoMetadata.title.trim(),
           description: updatedTodoMetadata.description?.trim(),
+          updatedAt: new Date(),
         };
       }
       return todo;

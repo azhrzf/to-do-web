@@ -5,12 +5,16 @@ import TodoWrapper from "./components/TodoWrapper";
 import { AppProvider } from "./context/AppContext";
 import { IoMdAddCircle } from "react-icons/io";
 
-export default function App() {
-  const addTodoButtonConfig = {
-    name: "Add To Do",
-    icon: <IoMdAddCircle />,
-  };
+const AddConfig: React.FC = () => {
+  return (
+    <div className="button-basic primary-link-bg basic-flex-middle">
+      <IoMdAddCircle />
+      <p>Add</p>
+    </div>
+  );
+};
 
+export default function App() {
   return (
     <AppProvider>
       <div className="wrapper">
@@ -20,7 +24,7 @@ export default function App() {
           </nav>
         </header>
         <main className="main__body">
-          <DialogWrapper buttonConfig={addTodoButtonConfig}>
+          <DialogWrapper buttonConfig={<AddConfig />}>
             <AddTodo />
           </DialogWrapper>
           <TodoWrapper />

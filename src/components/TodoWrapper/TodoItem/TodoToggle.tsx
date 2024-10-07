@@ -5,7 +5,7 @@ interface ToggleCompletedProps {
   toggleCompleted: () => void;
 }
 
-const ToggleCompleted: React.FC<ToggleCompletedProps> = ({
+const TodoToggle: React.FC<ToggleCompletedProps> = ({
   isTodoCompleted,
   toggleCompleted,
 }) => {
@@ -19,4 +19,4 @@ const ToggleCompleted: React.FC<ToggleCompletedProps> = ({
   );
 };
 
-export default ToggleCompleted;
+export default TodoToggle;

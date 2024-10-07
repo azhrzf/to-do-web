@@ -1,44 +1,36 @@
-import TodoItem from "../TodoItem";
+import TodoItem from "./TodoItem";
+import { useApp } from "@/hooks/useApp";
 
 export default function TodoWrapper() {
-  const dummyDate = new Date("2026-12-01");
+  const appContext = useApp();
+  const { todosContext } = appContext;
+  const { todos } = todosContext;
+
+  const todosInProgres = todos.filter((todo) => !todo.isCompleted);
+  const todosCompleted = todos.filter((todo) => todo.isCompleted);
 
   return (
-    <>
+    <div>
       <div className="todo__wrapper">
         <h2>In Progress</h2>
         <div className="todo__wrapper_grid">
-          {Array.from({ length: 5 }, (_, i) => i + 1).map((item) => (
-            <TodoItem
-              key={item}
-              id={item.toString()}
-              title="Lorem Ipsum Dolor"
-              description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae repudiandae ad nesciunt optio sequi."
-              isCompleted={false}
-              dueDate={dummyDate}
-              labelId="1"
-              userId="1"
-            />
-          ))}
+          {todosInProgres.length > 0 ? (
+            todosInProgres.map((todo) => <TodoItem key={todo.id} {...todo} />)
+          ) : (
+            <p className="text-center">No in progress tasks</p>
+          )}
         </div>
       </div>
       <div className="todo__wrapper">
         <h2>Completed</h2>
         <div className="todo__wrapper_grid">
-          {Array.from({ length: 5 }, (_, i) => i + 1).map((item) => (
-            <TodoItem
-              key={item}
-              id={item.toString()}
-              title="Lorem Ipsum Dolor"
-              description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae repudiandae ad nesciunt optio sequi."
-              isCompleted={true}
-              dueDate={dummyDate}
-              labelId="1"
-              userId="1"
-            />
-          ))}
+          {todosCompleted.length > 0 ? (
+            todosCompleted.map((todo) => <TodoItem key={todo.id} {...todo} />)
+          ) : (
+            <p className="text-center">No completed tasks</p>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

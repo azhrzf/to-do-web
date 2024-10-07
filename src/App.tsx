@@ -1,18 +1,14 @@
-import { useState } from "react";
 import "@fontsource/nunito-sans";
+import DialogWrapper from "./components/DialogWrapper";
 import AddTodo from "./components/AddTodo";
 import TodoWrapper from "./components/TodoWrapper";
 import { AppProvider } from "./context/AppContext";
+import { IoMdAddCircle } from "react-icons/io";
 
 export default function App() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const openDialog = () => {
-    setIsDialogOpen(true);
-  };
-
-  const closeDialog = () => {
-    setIsDialogOpen(false);
+  const addTodoButtonConfig = {
+    name: "Add To Do",
+    icon: <IoMdAddCircle />,
   };
 
   return (
@@ -21,21 +17,12 @@ export default function App() {
         <header className="main__header">
           <nav className="navbar">
             <h1>To Do Web</h1>
-            <div>
-              <button onClick={openDialog}>Open Dialog</button>
-              {isDialogOpen && (
-                <div className="dialog">
-                  <div className="dialog-content">
-                    <AddTodo />
-                    <button onClick={closeDialog}>Close</button>
-                  </div>
-                </div>
-              )}
-            </div>
           </nav>
         </header>
         <main className="main__body">
-          <AddTodo />
+          <DialogWrapper buttonConfig={addTodoButtonConfig}>
+            <AddTodo />
+          </DialogWrapper>
           <TodoWrapper />
         </main>
       </div>

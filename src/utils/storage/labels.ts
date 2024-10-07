@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { getUniqueTime } from "../helpers";
 
 export interface LabelMetadata {
@@ -8,7 +7,6 @@ export interface LabelMetadata {
 export interface Label extends LabelMetadata {
   id: string;
 }
-
 
 export function getLabelsStorage(): Label[] {
   const dateNow = new Date();
@@ -33,22 +31,12 @@ export function getLabelsStorage(): Label[] {
   return item ? JSON.parse(item) : [newLabel];
 }
 
-function verifyId(id: string, labels: Label[]): string {
-  const idHandler = slugify(id, { lower: true });
-  if (labels.find((label: Label) => label.id === idHandler)) {
-    return `${idHandler}-${getUniqueTime()}`;
-  }
-
-  return idHandler;
-}
-
 export function addLabelStorage(newLabelMetadata: LabelMetadata): Label[] {
   const { name } = newLabelMetadata;
   const labels = getLabelsStorage();
-  const verifiedId = verifyId(name, labels);
 
   const newLabel = {
-    id: verifiedId,
+    id: `label-${getUniqueTime()}`,
     name: name.trim(),
   };
 
@@ -63,7 +51,7 @@ export function updateLabelStorage(
 ): Label[] {
   const labels = getLabelsStorage().map((label: Label) => {
     if (label.id === updatedLabelId) {
-      return { ...label, ...newLabelMetadata };
+      return { ...label, name: newLabelMetadata.name.trim() };
     }
     return label;
   });
@@ -79,4 +67,12 @@ export function deleteLabelStorage(deletedLabelId: string): Label[] {
 
   localStorage.setItem("labels", JSON.stringify(labels));
   return labels;
+}
+
+export function getLabelNameById(labelId: string = ""): string {
+  if (labelId === "") return "No Label";
+
+  const labels = getLabelsStorage();
+  const label = labels.find((label: Label) => label.id === labelId);
+  return label ? label.name : "No Label";
 }

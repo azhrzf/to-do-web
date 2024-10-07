@@ -16,5 +16,6 @@ export interface TodosContextProps {
   updateTodo: (
     updatedTodoId: string,
     updatedTodoMetadata: TodoMetadata
-  ) => void;
+  ) => Todo;
+  deleteTodo: (deletedTodoId: string) => boolean;
 }

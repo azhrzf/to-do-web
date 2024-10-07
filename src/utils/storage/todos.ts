@@ -2,9 +2,9 @@ import { getUniqueTime } from "../helpers";
 
 export interface TodoMetadata {
   title: string;
-  description: string;
+  description?: string;
   isCompleted: boolean;
-  dueDate?: Date;
+  dueDate?: Date | string;
   labelId?: string;
   userId: string;
 }
@@ -21,12 +21,18 @@ export function getTodosStorage(): Todo[] {
   return item ? JSON.parse(item) : [];
 }
 
+function checkTodoIdExist(todos: Todo[], id: string): boolean {
+  return todos.some((todo: Todo) => todo.id === id);
+}
+
 export function addTodoStorage(newTodoMetadata: TodoMetadata): Todo[] {
   const todos = getTodosStorage();
 
   const newTodo = {
-    id: `todo ${getUniqueTime()}`,
     ...newTodoMetadata,
+    id: `todo-${getUniqueTime()}`,
+    title: newTodoMetadata.title.trim(),
+    description: newTodoMetadata.description?.trim(),
   };
 
   localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
@@ -38,27 +44,41 @@ export function updateTodoStorage(
   updatedTodoId: string,
   updatedTodoMetadata: TodoMetadata
 ): Todo[] {
-  const todos = getTodosStorage().map((todo: Todo) => {
-    if (todo.id === updatedTodoId) {
-      return {
-        ...todo,
-        ...updatedTodoMetadata,
-      };
-    }
-    return todo;
-  });
+  const todos = getTodosStorage();
+  const idExist = checkTodoIdExist(todos, updatedTodoId);
 
-  localStorage.setItem("todos", JSON.stringify(todos));
+  if (idExist) {
+    const newTodos = todos.map((todo: Todo) => {
+      if (todo.id === updatedTodoId) {
+        return {
+          ...todo,
+          ...updatedTodoMetadata,
+          title: updatedTodoMetadata.title.trim(),
+          description: updatedTodoMetadata.description?.trim(),
+        };
+      }
+      return todo;
+    });
 
-  return todos;
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+
+    return newTodos;
+  }
+
+  throw new Error("Todo not found");
 }
 
 export function deleteTodoStorage(deletedTodoId: string): Todo[] {
-  const todos = getTodosStorage().filter(
-    (todo: Todo) => todo.id !== deletedTodoId
-  );
+  const todos = getTodosStorage();
+  const idExist = checkTodoIdExist(todos, deletedTodoId);
 
-  localStorage.setItem("todos", JSON.stringify(todos));
+  if (idExist) {
+    const newTodos = todos.filter((todo: Todo) => todo.id !== deletedTodoId);
 
-  return todos;
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+
+    return newTodos;
+  }
+
+  throw new Error("Todo not found");
 }

@@ -1,3 +1,11 @@
+.label {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 4px;
+}
+
 .todo__wrapper {
   padding-top: 40px;
 }
@@ -13,14 +21,21 @@
 }
 
 .todo__wrapper_item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 20px 20px;
   border: 0.5px solid #dadada;
   background-color: white;
   border-radius: 15px;
 }
 
+.todo__wrapper_item * {
+  word-break: break-all;
+}
+
 .todo__wrapper_item > * + * {
-  margin-top: 4px;
+  margin-top: 10px;
 }
 
 .todo__wrapper_item_checkbox {
@@ -34,4 +49,30 @@
 
 .todo__wrapper_item_metadata > * + * {
   margin-top: 4px;
+}
+
+.todo__wrapper_item_buttons * {
+  font-size: 18px;
+}
+
+.todo__wrapper_item_buttons > * + * {
+  margin-left: 10px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .todo__wrapper_grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .todo__wrapper_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .todo__wrapper_grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }

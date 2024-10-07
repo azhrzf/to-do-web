@@ -1,12 +1,14 @@
 @import "./modifier.css";
-@import "./global.css";
+@import "./components/dialog.css";
 @import "./components/todo-form.css";
 @import "./components/todo-item.css";
 
 :root {
   --color-primary: #0b5afa;
+  --color-primary-dark: #0056b3;
   --color-secondary: #4b4b4b;
   --color-danger: red;
+  --color-danger-dark: darkred;
 }
 
 * {
@@ -46,6 +48,7 @@ body {
 }
 
 .main__body {
+  padding: 40px 0;
   background-color: #f8f8f8;
 }
 
@@ -53,24 +56,10 @@ body {
   .wrapper > * > * {
     padding: 0 30px;
   }
-
-  .todo__wrapper_grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .todo__wrapper_grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media only screen and (max-width: 400px) {
   .wrapper > * > * {
     padding: 0 20px;
-  }
-
-  .todo__wrapper_grid {
-    grid-template-columns: repeat(1, 1fr);
   }
 }

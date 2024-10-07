@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useApp } from "@/hooks/useApp";
 import { useInput } from "@/hooks/useInput";
+import { IoMdAddCircle, IoMdCloseCircle } from "react-icons/io";
+import clsx from "clsx";
 
 const AddLabel: React.FC<{ setSelectedLabel: (label: string) => void }> = ({
   setSelectedLabel,
@@ -23,7 +25,7 @@ const AddLabel: React.FC<{ setSelectedLabel: (label: string) => void }> = ({
   };
 
   return (
-    <div>
+    <div className={clsx(showAddLabel && "todo__form_label_inner")}>
       {showAddLabel && (
         <div className="todo__form_input">
           <label htmlFor="newLabel">New Label:</label>
@@ -37,17 +39,40 @@ const AddLabel: React.FC<{ setSelectedLabel: (label: string) => void }> = ({
         </div>
       )}
       <div className="todo__form_input">
-        <p>Can't find your label?</p>
+        {!showAddLabel && <p>Can't find your label?</p>}
         <button
           type="button"
+          className={clsx(
+            "button-basic max-w-full",
+            showAddLabel ? "danger-link-bg " : "primary-link-bg"
+          )}
           onClick={() => setShowAddLabel((prevState) => !prevState)}
         >
-          {showAddLabel ? "X" : "Add New Label"}
+          <div className="basic-flex-middle">
+            {showAddLabel ? (
+              <>
+                <IoMdCloseCircle />
+                <p>Cancel</p>
+              </>
+            ) : (
+              <>
+                <IoMdAddCircle />
+                <p>Add Label</p>
+              </>
+            )}
+          </div>
         </button>
       </div>
       {showAddLabel && (
-        <button type="button" onClick={handleAddLabel}>
-          Save Label
+        <button
+          type="button"
+          className="button-basic primary-link-bg max-w-full"
+          onClick={handleAddLabel}
+        >
+          <div className="basic-flex-middle">
+            <IoMdAddCircle />
+            <p>Add</p>
+          </div>
         </button>
       )}
     </div>

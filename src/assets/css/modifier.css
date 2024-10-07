@@ -1,3 +1,7 @@
+.color-primary {
+  color: var(--color-primary);
+}
+
 .color-secondary {
   color: var(--color-secondary);
 }
@@ -28,5 +32,86 @@
 
 .checkbox-completed {
   font-size: 28px;
+}
+
+.max-w-full {
+  width: 100%;
+}
+
+.primary-link {
   color: var(--color-primary);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: linear;
+}
+
+.primary-link:hover {
+  color: var(--color-primary-dark);
+}
+
+.danger-link {
+  color: var(--color-danger);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: linear;
+}
+
+.danger-link:hover {
+  color: var(--color-danger-dark);
+}
+
+.primary-link-bg {
+  color: white;
+  background-color: var(--color-primary);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: linear;
+}
+.primary-link-bg:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.danger-link-bg {
+  color: white;
+  background-color: var(--color-danger);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: linear;
+}
+
+.danger-link-bg:hover {
+  background-color: var(--color-danger-dark);
+}
+
+.basic-flex {
+  display: flex;
+  align-items: center;
+}
+
+.basic-flex-middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.basic-flex > * + *,
+.basic-flex-middle > * + * {
+  margin-left: 5px;
+}
+
+.basic-space-y > * + * {
+  margin-top: 15px;
+}
+
+.button-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }

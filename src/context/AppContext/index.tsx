@@ -13,12 +13,13 @@ import {
   getTodosStorage,
   addTodoStorage,
   updateTodoStorage,
+  deleteTodoStorage,
 } from "@/utils/storage/todos";
 import { TodosContextProps } from "./types";
 
 export interface AppContextProps {
-  todosContext: TodosContextProps;
   labelsContext: LabelsContextProps;
+  todosContext: TodosContextProps;
 }
 
 export const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -62,9 +63,27 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   function updateTodo(
     updatedTodoId: string,
     updatedTodoMetadata: TodoMetadata
-  ) {
+  ): Todo {
     const newTodos = updateTodoStorage(updatedTodoId, updatedTodoMetadata);
-    setTodos(newTodos);
+    if (newTodos) {
+      setTodos(newTodos);
+      const updatedTodo = newTodos.find((todo) => todo.id === updatedTodoId);
+      if (updatedTodo) {
+        return updatedTodo;
+      }
+    }
+
+    throw new Error("Failed to update todo");
+  }
+
+  function deleteTodo(deletedTodoId: string): boolean {
+    const newTodos = deleteTodoStorage(deletedTodoId);
+    if (newTodos) {
+      setTodos(newTodos);
+      return true;
+    }
+
+    throw new Error("Failed to delete todo");
   }
 
   const labelsContext = {
@@ -77,6 +96,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     todos,
     addTodo,
     updateTodo,
+    deleteTodo,
   };
 
   const allContext = {

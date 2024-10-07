@@ -1,28 +1,35 @@
 import { useState } from "react";
 import { useApp } from "@/hooks/useApp";
 import { useForm } from "@/hooks/useForm";
+import { sliceDate } from "@/utils/helpers";
+import { Todo } from "@/utils/storage/todos";
 import AddLabel from "../AddLabel";
 
-const AddTodo: React.FC = () => {
+const UpdateTodo: React.FC<Todo> = (props) => {
   const appContext = useApp();
   const { todosContext, labelsContext } = appContext;
-  const { addTodo } = todosContext;
+  const { updateTodo } = todosContext;
   const { labels } = labelsContext;
 
   const {
     state: todo,
     handleChange: handleTodoChange,
-    handleReset: handleTodoReset,
   } = useForm({
-    title: "",
-    description: "",
-    dueDate: "",
+    title: props.title,
+    description: props.description ?? "",
+    dueDate: props.dueDate ? sliceDate(props.dueDate.toString()) : "",
   });
 
-  const [selectedLabel, setSelectedLabel] = useState("");
+  const [selectedLabel, setSelectedLabel] = useState(props.labelId);
 
   const handleLabelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLabel(event.target.value);
+  };
+
+  const [isCompleted, setIsCompleted] = useState(props.isCompleted);
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCompleted(event.target.checked);
   };
 
   const [massageSubmit, setMassageSubmit] = useState({
@@ -38,15 +45,13 @@ const AddTodo: React.FC = () => {
       description: todo.description,
       dueDate: new Date(todo.dueDate),
       labelId: selectedLabel,
-      isCompleted: false,
+      isCompleted,
       userId: "user-1",
     };
 
-    const verifyNewTodo = addTodo(todoSubmit);
+    const verifyNewTodo = updateTodo(props.id, todoSubmit);
 
     if (verifyNewTodo) {
-      handleTodoReset();
-      setSelectedLabel("");
       setMassageSubmit({
         appear: true,
         error: false,
@@ -123,12 +128,22 @@ const AddTodo: React.FC = () => {
             onChange={handleTodoChange}
           />
         </div>
+        <div className="basic-flex">
+          <label htmlFor="isCompleted">Completed:</label>
+          <input
+            type="checkbox"
+            id="isCompleted"
+            name="isCompleted"
+            checked={isCompleted}
+            onChange={handleCheckboxChange}
+          />
+        </div>
         <button type="submit" className="button-basic primary-link-bg">
-          Submit
+          Update
         </button>
       </form>
     </div>
   );
 };
 
-export default AddTodo;
+export default UpdateTodo;

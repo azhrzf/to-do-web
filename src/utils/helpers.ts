@@ -31,3 +31,7 @@ export function convertDueDate(dueDate: Date): DueDateResult {
     isElapsed,
   };
 }
+
+export function sliceDate(date: string): string {
+  return date.slice(0, Number(date.length) - 5);
+}

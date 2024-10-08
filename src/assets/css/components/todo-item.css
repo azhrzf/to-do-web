@@ -1,3 +1,33 @@
+.todo__welcome {
+  margin-bottom: 25px;
+}
+
+.todo__tools {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  gap: 15px;
+}
+
+.todo__tools_second {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
+  gap: 15px;
+}
+
+.todo__tools_second > :not(.todo__tools_second_label) {
+  grid-column: span 2;
+}
+
+.todo__tools_second > :not(.todo__tools_second_label) button {
+  width: 100%;
+}
+
+.todo__tools_second > .todo__tools_second_label {
+  grid-column: span 4;
+}
+
 .label {
   background-color: var(--color-primary);
   color: white;
@@ -31,7 +61,7 @@
 }
 
 .todo__wrapper_item * {
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .todo__wrapper_item > * + * {
@@ -60,18 +90,30 @@
 }
 
 @media only screen and (max-width: 1280px) {
+  .todo__tools_second,
+  .todo__tools,
   .todo__wrapper_grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .todo__tools_second > * {
+    grid-column: span 1 !important;
   }
 }
 
 @media only screen and (max-width: 800px) {
+  .todo__tools,
   .todo__wrapper_grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .todo__tools_second > .todo__tools_second_label {
+    grid-column: span 2;
   }
 }
 
 @media only screen and (max-width: 400px) {
+  .todo__tools,
   .todo__wrapper_grid {
     grid-template-columns: repeat(1, 1fr);
   }

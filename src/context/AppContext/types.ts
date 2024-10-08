@@ -9,6 +9,7 @@ export interface LabelsContextProps {
     updatedLabelId: string,
     updatedLabelMetadata: LabelMetadata
   ) => void;
+  deleteLabel: (deletedLabelId: string, userId: string) => void;
 }
 
 export interface TodosContextProps {

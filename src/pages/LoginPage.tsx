@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useForm } from "@/hooks/useForm";
 import { useApp } from "@/hooks/useApp";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const appContext = useApp();
   const { usersContext } = appContext;
-  const { loginUser } = usersContext;
+  const { currentUser, loginUser } = usersContext;
+
+  const navigate = useNavigate();
 
   const {
     state: userData,
@@ -37,6 +40,7 @@ const LoginPage: React.FC = () => {
         message: "Login successful!",
       });
       handleUserReset();
+      navigate("/");
     } catch (error) {
       setMessageSubmit({
         appear: true,
@@ -45,6 +49,10 @@ const LoginPage: React.FC = () => {
       });
     }
   };
+
+  if (currentUser && currentUser.loggedIn) {
+    navigate("/");
+  }
 
   return (
     <div>
@@ -79,6 +87,12 @@ const LoginPage: React.FC = () => {
               required
               autoComplete="password"
             />
+          </div>
+          <div>
+            <span>Don't have an account yet? </span>
+            <Link to="/register" className="primary-link">
+              Register here.
+            </Link>
           </div>
           <button type="submit" className="button-basic primary-link-bg">
             Login

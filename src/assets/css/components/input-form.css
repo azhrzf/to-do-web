@@ -73,6 +73,7 @@ textarea:focus {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  text-decoration: none;
 }
 
 .register__wrapper {
@@ -81,7 +82,7 @@ textarea:focus {
   border: 0.5px solid #dadada;
   background-color: white;
   border-radius: 15px;
-  margin: 0 auto;
+  margin: 30px auto 0 auto;
 }
 
 @media only screen and (max-width: 800px) {

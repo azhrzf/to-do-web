@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import LogoutButton from "@/components/LogoutButton";
 import { useApp } from "@/hooks/useApp";
 
@@ -11,7 +11,9 @@ const MainLayout: React.FC = () => {
     <div className="wrapper">
       <header className="main__header">
         <nav className="navbar">
-          <h1>To Do Web</h1>
+          <Link to="/"  className="primary-link">
+            <h1>To Do Web</h1>
+          </Link>
           {currentUser && currentUser.loggedIn && <LogoutButton />}
         </nav>
       </header>

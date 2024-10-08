@@ -26,17 +26,20 @@ const AddLabel: React.FC<AddLabelProps> = ({ setSelectedLabel }) => {
   });
 
   useEffect(() => {
-    if (labels.length > 0) {
-      setSelectedLabel(labels[labels.length - 1].id);
+    const verifiedLabels = labels.filter(
+      (label) => label.userId === currentUser.userId
+    );
+    if (verifiedLabels.length > 0) {
+      setSelectedLabel(verifiedLabels[verifiedLabels.length - 1].id);
     }
-  }, [labels, setSelectedLabel]);
+  }, [labels, setSelectedLabel, currentUser.userId]);
 
   const handleAddLabel = () => {
     try {
       if (!currentUser.userId) {
         throw new Error("User not found");
       }
-      
+
       addLabel({ userId: currentUser.userId, name: newLabel });
       setShowAddLabel(false);
     } catch (error) {

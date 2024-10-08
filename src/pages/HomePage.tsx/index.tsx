@@ -8,7 +8,7 @@ const HomePage: React.FC = () => {
   const { currentUser } = usersContext;
 
   return (
-    <div>
+    <div className="center-start">
       {currentUser && currentUser.loggedIn ? <TodoPage /> : <BannerPage />}
     </div>
   );

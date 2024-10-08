@@ -1,4 +1,5 @@
 import "@fontsource/nunito-sans";
+import "@fontsource/nunito-sans/900.css";
 import { AppProvider } from "./context/AppContext";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";

@@ -43,6 +43,7 @@
   transition-property: all;
   transition-duration: 0.3s;
   transition-timing-function: linear;
+  text-decoration: none;
 }
 
 .primary-link:hover {
@@ -54,6 +55,8 @@
   transition-property: all;
   transition-duration: 0.3s;
   transition-timing-function: linear;
+  text-decoration: none;
+
 }
 
 .danger-link:hover {
@@ -114,8 +117,14 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  text-decoration: none;
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
+
+.no-decoration {
+  text-decoration: none;
+}
+

@@ -115,3 +115,11 @@ export function deleteTodoStorage(
     throw new Error((error as Error).message);
   }
 }
+
+export function getTodosByUserId(todos: Todo[], userId: string = ""): Todo[] {
+  try {
+    return todos.filter((todo: Todo) => todo.userId === userId);
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}

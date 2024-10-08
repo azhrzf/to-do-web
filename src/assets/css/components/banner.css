@@ -1,0 +1,23 @@
+.banner__title {
+  margin-top: 50px;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 55px;
+}
+
+.banner {
+  max-width: 800px;
+}
+
+.banner p {
+  line-height: 25px;
+}
+
+.banner__cta {
+  display: flex;
+  align-items: center;
+}
+
+.banner__cta > * + * {
+  margin-left: 10px;
+}

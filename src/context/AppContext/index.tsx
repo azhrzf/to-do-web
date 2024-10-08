@@ -5,6 +5,7 @@ import {
   getLabelsStorage,
   addLabelStorage,
   updateLabelStorage,
+  deleteLabelStorage,
 } from "@/utils/storage/labels";
 
 import {
@@ -69,7 +70,21 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updatedLabelId,
         updatedLabelMetadata
       );
-      setLabels(newLabels);
+      if (newLabels) {
+        setLabels(newLabels);
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
+
+  const deleteLabel = (deletedLabelId: string, userId: string): void => {
+    try {
+      const newStorage = deleteLabelStorage(deletedLabelId, userId);
+      if (newStorage) {
+        setLabels(newStorage.labels);
+        setTodos(newStorage.todos);
+      }
     } catch (error) {
       throw new Error((error as Error).message);
     }
@@ -136,7 +151,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const logoutUser = (): void => {
     try {
       const logoutItem = logoutUserStorage();
-      setCurrentUser(logoutItem);
+      if (logoutItem) {
+        setCurrentUser(logoutItem);
+      }
     } catch (error) {
       throw new Error((error as Error).message);
     }
@@ -146,6 +163,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     labels,
     addLabel,
     updateLabel,
+    deleteLabel,
   };
 
   const todosContext = {

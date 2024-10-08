@@ -50,6 +50,7 @@ const AddTodo: React.FC = () => {
         userId: currentUser.userId,
       };
 
+
       addTodo(todoSubmit);
 
       handleTodoReset();
@@ -102,10 +103,10 @@ const AddTodo: React.FC = () => {
         </div>
         <div className="input__form_label">
           <div className="input__form_input">
-            <label htmlFor="pet-select">Choose a pet:</label>
+            <label htmlFor="label-select">Choose a label:</label>
             <select
               name="labelId"
-              id="pet-select"
+              id="label-select"
               value={selectedLabel}
               onChange={handleLabelChange}
             >

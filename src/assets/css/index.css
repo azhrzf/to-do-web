@@ -1,5 +1,6 @@
 @import "./modifier.css";
 @import "./components/dialog.css";
+@import "./components/banner.css";
 @import "./components/input-form.css";
 @import "./components/todo-item.css";
 
@@ -21,7 +22,6 @@ body {
   font-family: "Nunito Sans", sans-serif;
   background-color: white;
 }
-
 
 .wrapper > * > * {
   max-width: 1280px;
@@ -52,7 +52,6 @@ body {
   padding: 40px 0;
   background-color: #f8f8f8;
   min-height: 90vh;
-  min-width: 100%;
 }
 
 @media only screen and (max-width: 1280px) {

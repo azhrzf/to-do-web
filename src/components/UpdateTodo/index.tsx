@@ -51,7 +51,7 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
         description: todo.description,
         dueDate: new Date(todo.dueDate),
         labelId: selectedLabel,
-        isCompleted: false,
+        isCompleted,
         userId: currentUser.userId,
       };
 
@@ -73,7 +73,7 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
 
   return (
     <div className="basic-space-y">
-      <h2>Add Todo</h2>
+      <h2>Update Todo</h2>
       {messageSubmit.appear && (
         <p className={messageSubmit.error ? "color-danger" : "color-primary"}>
           {messageSubmit.message}
@@ -105,10 +105,10 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
         </div>
         <div className="input__form_label">
           <div className="input__form_input">
-            <label htmlFor="pet-select">Choose a pet:</label>
+            <label htmlFor="label-select">Choose a label:</label>
             <select
               name="labelId"
-              id="pet-select"
+              id="label-select"
               value={selectedLabel}
               onChange={handleLabelChange}
             >

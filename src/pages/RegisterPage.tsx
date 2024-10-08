@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useForm } from "@/hooks/useForm";
 import { useApp } from "@/hooks/useApp";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const RegisterPage: React.FC = () => {
   const appContext = useApp();
   const { usersContext } = appContext;
-  const { registerUser } = usersContext;
+  const { currentUser, registerUser } = usersContext;
 
   const navigate = useNavigate();
 
@@ -56,6 +56,10 @@ const RegisterPage: React.FC = () => {
       });
     }
   };
+
+  if (currentUser && currentUser.loggedIn) {
+    navigate("/");
+  }
 
   return (
     <div>
@@ -114,6 +118,12 @@ const RegisterPage: React.FC = () => {
               required
               autoComplete="confirmPassword"
             />
+          </div>
+          <div>
+            <span>Already have an account? </span>
+            <Link to="/login" className="primary-link">
+              Login here.
+            </Link>
           </div>
           <button type="submit" className="button-basic primary-link-bg">
             Register

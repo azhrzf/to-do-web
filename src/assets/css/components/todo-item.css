@@ -60,7 +60,6 @@
   border-radius: 15px;
 }
 
-
 .todo__wrapper_item > * + * {
   margin-top: 10px;
 }
@@ -92,10 +91,6 @@
   .todo__wrapper_grid {
     grid-template-columns: repeat(3, 1fr);
   }
-
-  .todo__tools_second > * {
-    grid-column: span 1 !important;
-  }
 }
 
 @media only screen and (max-width: 800px) {
@@ -103,10 +98,17 @@
   .todo__wrapper_grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .todo__tools_second > .todo__tools_second_label {
-    grid-column: span 2;
+@media only screen and (max-width: 660px) {
+  .todo__tools_second {
+    display: block;
   }
+
+  .todo__tools_second > * + * {
+    margin-top: 10px;
+  }
+  
 }
 
 @media only screen and (max-width: 400px) {

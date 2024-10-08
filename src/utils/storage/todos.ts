@@ -1,3 +1,4 @@
+import { getUsersStorage } from "./users";
 import { getUniqueTime } from "../helpers";
 
 export interface TodoMetadata {
@@ -16,74 +17,101 @@ export interface Todo extends TodoMetadata {
 }
 
 export function getTodosStorage(): Todo[] {
-  if (localStorage.getItem("todos") === null) {
-    localStorage.setItem("todos", JSON.stringify([]));
+  try {
+    if (localStorage.getItem("todos") === null) {
+      localStorage.setItem("todos", JSON.stringify([]));
+    }
+    const item = localStorage.getItem("todos");
+    return item ? JSON.parse(item) : [];
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
-  const item = localStorage.getItem("todos");
-  return item ? JSON.parse(item) : [];
-}
-
-function checkTodoIdExist(todos: Todo[], id: string): boolean {
-  return todos.some((todo: Todo) => todo.id === id);
 }
 
 export function addTodoStorage(newTodoMetadata: TodoMetadata): Todo[] {
-  const todos = getTodosStorage();
+  try {
+    if (!getUsersStorage().some((user) => user.id === newTodoMetadata.userId)) {
+      throw new Error("User not found");
+    }
 
-  const newTodo = {
-    ...newTodoMetadata,
-    id: `todo-${getUniqueTime()}`,
-    title: newTodoMetadata.title.trim(),
-    description: newTodoMetadata.description?.trim(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+    const todos = getTodosStorage();
 
-  localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
+    const newTodo = {
+      ...newTodoMetadata,
+      id: `todo-${getUniqueTime()}`,
+      title: newTodoMetadata.title.trim(),
+      description: newTodoMetadata.description?.trim(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-  return [...todos, newTodo];
+    localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
+
+    return [...todos, newTodo];
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 }
 
 export function updateTodoStorage(
   updatedTodoId: string,
   updatedTodoMetadata: TodoMetadata
 ): Todo[] {
-  const todos = getTodosStorage();
-  const idExist = checkTodoIdExist(todos, updatedTodoId);
+  try {
+    const todos = getTodosStorage();
+    const idExist = todos.some((todo: Todo) => todo.id === updatedTodoId);
 
-  if (idExist) {
-    const newTodos = todos.map((todo: Todo) => {
-      if (todo.id === updatedTodoId) {
-        return {
-          ...todo,
-          ...updatedTodoMetadata,
-          title: updatedTodoMetadata.title.trim(),
-          description: updatedTodoMetadata.description?.trim(),
-          updatedAt: new Date(),
-        };
-      }
-      return todo;
-    });
+    if (idExist) {
+      const newTodos = todos.map((todo: Todo) => {
+        if (todo.id === updatedTodoId) {
+          if (todo.userId !== updatedTodoMetadata.userId) {
+            throw new Error("Not authorized to update");
+          }
 
-    localStorage.setItem("todos", JSON.stringify(newTodos));
+          return {
+            ...todo,
+            ...updatedTodoMetadata,
+            title: updatedTodoMetadata.title.trim(),
+            description: updatedTodoMetadata.description?.trim(),
+            updatedAt: new Date(),
+          };
+        }
+        return todo;
+      });
 
-    return newTodos;
+      localStorage.setItem("todos", JSON.stringify(newTodos));
+
+      return newTodos;
+    }
+
+    throw new Error("Todo not found");
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
-
-  throw new Error("Todo not found");
 }
 
-export function deleteTodoStorage(deletedTodoId: string): Todo[] {
-  const todos = getTodosStorage();
-  const idExist = checkTodoIdExist(todos, deletedTodoId);
+export function deleteTodoStorage(
+  deletedTodoId: string,
+  userId: string
+): Todo[] {
+  try {
+    const todos = getTodosStorage();
+    const deletedTodo = todos.find((todo: Todo) => todo.id === deletedTodoId);
 
-  if (idExist) {
+    if (!deletedTodo) {
+      throw new Error("Todo not found");
+    }
+
+    if (deletedTodo.userId !== userId) {
+      throw new Error("You are not authorized to delete this label");
+    }
+
     const newTodos = todos.filter((todo: Todo) => todo.id !== deletedTodoId);
 
     localStorage.setItem("todos", JSON.stringify(newTodos));
 
     return newTodos;
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
-
-  throw new Error("Todo not found");
 }

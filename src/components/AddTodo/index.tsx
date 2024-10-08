@@ -5,9 +5,10 @@ import AddLabel from "../AddLabel";
 
 const AddTodo: React.FC = () => {
   const appContext = useApp();
-  const { todosContext, labelsContext } = appContext;
+  const { todosContext, labelsContext, usersContext } = appContext;
   const { addTodo } = todosContext;
   const { labels } = labelsContext;
+  const { currentUser } = usersContext;
 
   const {
     state: todo,
@@ -19,13 +20,15 @@ const AddTodo: React.FC = () => {
     dueDate: "",
   });
 
+  const verifiedLabels = labels.filter((label) => label.userId === currentUser.userId);
+
   const [selectedLabel, setSelectedLabel] = useState("");
 
   const handleLabelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLabel(event.target.value);
   };
 
-  const [massageSubmit, setMassageSubmit] = useState({
+  const [messageSubmit, setMessageSubmit] = useState({
     appear: false,
     error: false,
     message: "",
@@ -33,30 +36,34 @@ const AddTodo: React.FC = () => {
 
   const handleTodoFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const todoSubmit = {
-      title: todo.title,
-      description: todo.description,
-      dueDate: new Date(todo.dueDate),
-      labelId: selectedLabel,
-      isCompleted: false,
-      userId: "user-1",
-    };
+    try {
+      if (!currentUser.userId) {
+        throw new Error("User not found");
+      }
 
-    const verifyNewTodo = addTodo(todoSubmit);
+      const todoSubmit = {
+        title: todo.title,
+        description: todo.description,
+        dueDate: new Date(todo.dueDate),
+        labelId: selectedLabel,
+        isCompleted: false,
+        userId: currentUser.userId,
+      };
 
-    if (verifyNewTodo) {
+      addTodo(todoSubmit);
+
       handleTodoReset();
       setSelectedLabel("");
-      setMassageSubmit({
+      setMessageSubmit({
         appear: true,
         error: false,
         message: "Todo added successfully!",
       });
-    } else {
-      setMassageSubmit({
+    } catch (error) {
+      setMessageSubmit({
         appear: true,
         error: true,
-        message: "Error adding todo. Please try again.",
+        message: `Error adding todo: ${(error as Error).message}`,
       });
     }
   };
@@ -64,14 +71,14 @@ const AddTodo: React.FC = () => {
   return (
     <div className="basic-space-y">
       <h2>Add Todo</h2>
-      {massageSubmit.appear && (
-        <p className={massageSubmit.error ? "color-danger" : "color-primary"}>
-          {massageSubmit.message}
+      {messageSubmit.appear && (
+        <p className={messageSubmit.error ? "color-danger" : "color-primary"}>
+          {messageSubmit.message}
         </p>
       )}
-      <form onSubmit={handleTodoFormSubmit} className="todo__form">
-        <div className="todo__form_first">
-          <div className="todo__form_input">
+      <form onSubmit={handleTodoFormSubmit} className="input__form">
+        <div className="input__form_first">
+          <div className="input__form_input">
             <label htmlFor="title">Title:</label>
             <input
               type="text"
@@ -82,7 +89,7 @@ const AddTodo: React.FC = () => {
               required
             />
           </div>
-          <div className="todo__form_input">
+          <div className="input__form_input">
             <label htmlFor="due-date">Due:</label>
             <input
               type="datetime-local"
@@ -93,8 +100,8 @@ const AddTodo: React.FC = () => {
             />
           </div>
         </div>
-        <div className="todo__form_label">
-          <div className="todo__form_input">
+        <div className="input__form_label">
+          <div className="input__form_input">
             <label htmlFor="pet-select">Choose a pet:</label>
             <select
               name="labelId"
@@ -103,7 +110,7 @@ const AddTodo: React.FC = () => {
               onChange={handleLabelChange}
             >
               <option value="">--No Label--</option>
-              {labels.map((label) => {
+              {verifiedLabels.map((label) => {
                 return (
                   <option key={label.id} value={label.id}>
                     {label.name}
@@ -114,7 +121,7 @@ const AddTodo: React.FC = () => {
           </div>
           <AddLabel setSelectedLabel={setSelectedLabel} />
         </div>
-        <div className="todo__form_input">
+        <div className="input__form_input">
           <label htmlFor="description">Description:</label>
           <textarea
             id="description"

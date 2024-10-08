@@ -1,35 +1,24 @@
 import "@fontsource/nunito-sans";
-import DialogWrapper from "./components/DialogWrapper";
-import AddTodo from "./components/AddTodo";
-import TodoWrapper from "./components/TodoWrapper";
 import { AppProvider } from "./context/AppContext";
-import { IoMdAddCircle } from "react-icons/io";
-
-const AddConfig: React.FC = () => {
-  return (
-    <div className="button-basic primary-link-bg basic-flex-middle">
-      <IoMdAddCircle />
-      <p>Add</p>
-    </div>
-  );
-};
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import HomePage from "./pages/HomePage.tsx";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 export default function App() {
   return (
     <AppProvider>
-      <div className="wrapper">
-        <header className="main__header">
-          <nav className="navbar">
-            <h1>To Do Web</h1>
-          </nav>
-        </header>
-        <main className="main__body">
-          <DialogWrapper buttonConfig={<AddConfig />}>
-            <AddTodo />
-          </DialogWrapper>
-          <TodoWrapper />
-        </main>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </AppProvider>
   );
 }

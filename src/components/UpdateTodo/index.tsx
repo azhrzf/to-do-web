@@ -7,9 +7,10 @@ import AddLabel from "../AddLabel";
 
 const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
   const appContext = useApp();
-  const { todosContext, labelsContext } = appContext;
+  const { todosContext, labelsContext, usersContext } = appContext;
   const { updateTodo } = todosContext;
   const { labels } = labelsContext;
+  const { currentUser } = usersContext;
 
   const { state: todo, handleChange: handleTodoChange } = useForm({
     title: updatedTodoProps.title,
@@ -31,7 +32,7 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
     setIsCompleted(event.target.checked);
   };
 
-  const [massageSubmit, setMassageSubmit] = useState({
+  const [messageSubmit, setMessageSubmit] = useState({
     appear: false,
     error: false,
     message: "",
@@ -39,28 +40,33 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
 
   const handleTodoFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const todoSubmit = {
-      title: todo.title,
-      description: todo.description,
-      dueDate: new Date(todo.dueDate),
-      labelId: selectedLabel,
-      isCompleted,
-      userId: "user-1",
-    };
 
-    const verifyNewTodo = updateTodo(updatedTodoProps.id, todoSubmit);
+    try {
+      if (!currentUser.userId) {
+        throw new Error("User not found");
+      }
 
-    if (verifyNewTodo) {
-      setMassageSubmit({
+      const todoSubmit = {
+        title: todo.title,
+        description: todo.description,
+        dueDate: new Date(todo.dueDate),
+        labelId: selectedLabel,
+        isCompleted: false,
+        userId: currentUser.userId,
+      };
+
+      updateTodo(updatedTodoProps.id, todoSubmit);
+
+      setMessageSubmit({
         appear: true,
         error: false,
-        message: "Todo added successfully!",
+        message: "Todo updated successfully!",
       });
-    } else {
-      setMassageSubmit({
+    } catch (error) {
+      setMessageSubmit({
         appear: true,
         error: true,
-        message: "Error adding todo. Please try again.",
+        message: (error as Error).message,
       });
     }
   };
@@ -68,14 +74,14 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
   return (
     <div className="basic-space-y">
       <h2>Add Todo</h2>
-      {massageSubmit.appear && (
-        <p className={massageSubmit.error ? "color-danger" : "color-primary"}>
-          {massageSubmit.message}
+      {messageSubmit.appear && (
+        <p className={messageSubmit.error ? "color-danger" : "color-primary"}>
+          {messageSubmit.message}
         </p>
       )}
-      <form onSubmit={handleTodoFormSubmit} className="todo__form">
-        <div className="todo__form_first">
-          <div className="todo__form_input">
+      <form onSubmit={handleTodoFormSubmit} className="input__form">
+        <div className="input__form_first">
+          <div className="input__form_input">
             <label htmlFor="title">Title:</label>
             <input
               type="text"
@@ -86,7 +92,7 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
               required
             />
           </div>
-          <div className="todo__form_input">
+          <div className="input__form_input">
             <label htmlFor="due-date">Due:</label>
             <input
               type="datetime-local"
@@ -97,8 +103,8 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
             />
           </div>
         </div>
-        <div className="todo__form_label">
-          <div className="todo__form_input">
+        <div className="input__form_label">
+          <div className="input__form_input">
             <label htmlFor="pet-select">Choose a pet:</label>
             <select
               name="labelId"
@@ -118,7 +124,7 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
           </div>
           <AddLabel setSelectedLabel={setSelectedLabel} />
         </div>
-        <div className="todo__form_input">
+        <div className="input__form_input">
           <label htmlFor="description">Description:</label>
           <textarea
             id="description"

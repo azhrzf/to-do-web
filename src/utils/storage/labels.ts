@@ -1,7 +1,10 @@
+import { getUsersStorage } from "./users";
+import { Todo, getTodosStorage, updateTodoStorage } from "./todos";
 import { getUniqueTime } from "../helpers";
 
 export interface LabelMetadata {
   name: string;
+  userId: string;
 }
 
 export interface Label extends LabelMetadata {
@@ -11,70 +14,112 @@ export interface Label extends LabelMetadata {
 }
 
 export function getLabelsStorage(): Label[] {
-  const dateNow = new Date();
+  try {
+    if (localStorage.getItem("labels") === null) {
+      localStorage.setItem("labels", JSON.stringify([]));
+    }
 
-  const newLabel = {
-    id: `no-label-${dateNow.getTime()}`,
-    name: "No Label",
-  };
+    const item = localStorage.getItem("labels");
 
-  if (localStorage.getItem("labels") === null) {
-    localStorage.setItem("labels", JSON.stringify([newLabel]));
+    return item ? JSON.parse(item) : [];
+  } catch (error) {
+    throw new Error((error as Error).message);
   }
-
-  const item = localStorage.getItem("labels");
-
-  const isLabelsArray = item && Array.isArray(JSON.parse(item));
-  const isLabelsEmpty = isLabelsArray && JSON.parse(item).length === 0;
-
-  if (isLabelsEmpty) {
-    localStorage.setItem("labels", JSON.stringify([newLabel]));
-  }
-  return item ? JSON.parse(item) : [newLabel];
 }
 
 export function addLabelStorage(newLabelMetadata: LabelMetadata): Label[] {
-  const { name } = newLabelMetadata;
-  const labels = getLabelsStorage();
+  try {
+    const { userId, name } = newLabelMetadata;
 
-  const newLabel = {
-    id: `label-${getUniqueTime()}`,
-    name: name.trim(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+    if (!getUsersStorage().some((user) => user.id === userId)) {
+      throw new Error("User not found");
+    }
 
-  localStorage.setItem("labels", JSON.stringify([...labels, newLabel]));
+    const labels = getLabelsStorage();
 
-  return [...labels, newLabel];
+    const newLabel = {
+      id: `label-${getUniqueTime()}`,
+      name: name.trim(),
+      userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    localStorage.setItem("labels", JSON.stringify([...labels, newLabel]));
+
+    return [...labels, newLabel];
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 }
 
 export function updateLabelStorage(
   updatedLabelId: string,
   newLabelMetadata: LabelMetadata
 ): Label[] {
-  const labels = getLabelsStorage().map((label: Label) => {
-    if (label.id === updatedLabelId) {
-      return {
-        ...label,
-        name: newLabelMetadata.name.trim(),
-        updatedAt: new Date(),
-      };
-    }
-    return label;
-  });
+  try {
+    const labels = getLabelsStorage().map((label: Label) => {
+      if (label.id === updatedLabelId) {
+        if (label.userId !== newLabelMetadata.userId) {
+          throw new Error("You are not authorized to update this label");
+        }
 
-  localStorage.setItem("labels", JSON.stringify(labels));
-  return labels;
+        return {
+          ...label,
+          name: newLabelMetadata.name.trim(),
+          updatedAt: new Date(),
+        };
+      }
+      return label;
+    });
+
+    localStorage.setItem("labels", JSON.stringify(labels));
+
+    return labels;
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 }
 
-export function deleteLabelStorage(deletedLabelId: string): Label[] {
-  const labels = getLabelsStorage().filter(
-    (label: Label) => label.id !== deletedLabelId
-  );
+export function deleteLabelStorage(
+  deletedLabelId: string,
+  userId: string
+): {
+  labels: Label[];
+  todos: Todo[];
+} {
+  try {
+    const labels = getLabelsStorage();
+    const deletedLabel = labels.find(
+      (label: Label) => label.id === deletedLabelId
+    );
 
-  localStorage.setItem("labels", JSON.stringify(labels));
-  return labels;
+    if (!deletedLabel) {
+      throw new Error("Label not found");
+    }
+
+    if (deletedLabel.userId !== userId) {
+      throw new Error("You are not authorized to delete this label");
+    }
+
+    const newLabels = labels.filter(
+      (label: Label) => label.id !== deletedLabelId
+    );
+
+    localStorage.setItem("labels", JSON.stringify(newLabels));
+    getTodosStorage().forEach((todo: Todo) => {
+      if (todo.labelId === deletedLabelId) {
+        updateTodoStorage(todo.id, {
+          ...todo,
+          labelId: "no-label",
+        });
+      }
+    });
+
+    return { labels: newLabels, todos: getTodosStorage() };
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 }
 
 export function getLabelNameById(labelId: string = ""): string {

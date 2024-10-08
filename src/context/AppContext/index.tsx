@@ -1,25 +1,40 @@
 import { createContext, useState, ReactNode } from "react";
+
 import {
-  Label,
   LabelMetadata,
   getLabelsStorage,
   addLabelStorage,
   updateLabelStorage,
 } from "@/utils/storage/labels";
-import { LabelsContextProps } from "./types";
+
 import {
-  Todo,
   TodoMetadata,
   getTodosStorage,
   addTodoStorage,
   updateTodoStorage,
   deleteTodoStorage,
 } from "@/utils/storage/todos";
-import { TodosContextProps } from "./types";
+
+import {
+  RegisterData,
+  LoginData,
+  getUsersStorage,
+  registerUserStorage,
+  loginUserStorage,
+  getCurrentUserStorage,
+  logoutUserStorage,
+} from "@/utils/storage/users";
+
+import {
+  LabelsContextProps,
+  TodosContextProps,
+  UsersContextProps,
+} from "./types";
 
 export interface AppContextProps {
   labelsContext: LabelsContextProps;
   todosContext: TodosContextProps;
+  usersContext: UsersContextProps;
 }
 
 export const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -31,60 +46,101 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [labels, setLabels] = useState(getLabelsStorage());
   const [todos, setTodos] = useState(getTodosStorage());
+  const [users, setUsers] = useState(getUsersStorage());
+  const [currentUser, setCurrentUser] = useState(getCurrentUserStorage());
 
-  function addLabel(newLabelMetadata: LabelMetadata): Label {
-    const newLabels = addLabelStorage(newLabelMetadata);
-    if (newLabels) {
-      setLabels(newLabels);
-      return newLabels[newLabels.length - 1];
+  const addLabel = (newLabelMetadata: LabelMetadata): void => {
+    try {
+      const newLabels = addLabelStorage(newLabelMetadata);
+      if (newLabels) {
+        setLabels(newLabels);
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
+  };
 
-    throw new Error("Failed to add label");
-  }
-
-  function updateLabel(
+  const updateLabel = (
     updatedLabelId: string,
     updatedLabelMetadata: LabelMetadata
-  ) {
-    const newLabels = updateLabelStorage(updatedLabelId, updatedLabelMetadata);
-    setLabels(newLabels);
-  }
-
-  function addTodo(newTodoMetadata: TodoMetadata): Todo {
-    const newTodos = addTodoStorage(newTodoMetadata);
-    if (newTodos) {
-      setTodos(newTodos);
-      return newTodos[newTodos.length - 1];
+  ): void => {
+    try {
+      const newLabels = updateLabelStorage(
+        updatedLabelId,
+        updatedLabelMetadata
+      );
+      setLabels(newLabels);
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
+  };
 
-    throw new Error("Failed to add todo");
-  }
+  const addTodo = (newTodoMetadata: TodoMetadata): void => {
+    try {
+      const newTodos = addTodoStorage(newTodoMetadata);
+      if (newTodos) {
+        setTodos(newTodos);
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
 
-  function updateTodo(
+  const updateTodo = (
     updatedTodoId: string,
     updatedTodoMetadata: TodoMetadata
-  ): Todo {
-    const newTodos = updateTodoStorage(updatedTodoId, updatedTodoMetadata);
-    if (newTodos) {
-      setTodos(newTodos);
-      const updatedTodo = newTodos.find((todo) => todo.id === updatedTodoId);
-      if (updatedTodo) {
-        return updatedTodo;
+  ): void => {
+    try {
+      const newTodos = updateTodoStorage(updatedTodoId, updatedTodoMetadata);
+      if (newTodos) {
+        setTodos(newTodos);
       }
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
+  };
 
-    throw new Error("Failed to update todo");
-  }
-
-  function deleteTodo(deletedTodoId: string): boolean {
-    const newTodos = deleteTodoStorage(deletedTodoId);
-    if (newTodos) {
-      setTodos(newTodos);
-      return true;
+  const deleteTodo = (deletedTodoId: string, userId: string): void => {
+    try {
+      const newTodos = deleteTodoStorage(deletedTodoId, userId);
+      if (newTodos) {
+        setTodos(newTodos);
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
+  };
 
-    throw new Error("Failed to delete todo");
-  }
+  const registerUser = (RegisterData: RegisterData): void => {
+    try {
+      const newUsers = registerUserStorage(RegisterData);
+      if (newUsers) {
+        setUsers(newUsers);
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
+
+  const loginUser = (loginData: LoginData): void => {
+    try {
+      const currentUser = loginUserStorage(loginData);
+      if (currentUser) {
+        setCurrentUser(currentUser);
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
+
+  const logoutUser = (): void => {
+    try {
+      const logoutItem = logoutUserStorage();
+      setCurrentUser(logoutItem);
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  };
 
   const labelsContext = {
     labels,
@@ -99,9 +155,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     deleteTodo,
   };
 
+  const usersContext = {
+    users,
+    registerUser,
+    loginUser,
+    currentUser,
+    logoutUser,
+  };
+
   const allContext = {
     labelsContext,
     todosContext,
+    usersContext,
   };
 
   return (

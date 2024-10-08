@@ -1,7 +1,7 @@
 import { FaTrashAlt } from "react-icons/fa";
 
 interface DeleteButtonProps {
-  deleteTodo: () => boolean;
+  deleteTodo: () => void;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ deleteTodo }) => {

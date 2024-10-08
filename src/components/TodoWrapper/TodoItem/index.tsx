@@ -1,3 +1,4 @@
+import { useState } from "react";
 import TodoToggle from "./TodoToggle";
 import DeleteButton from "./TodoButtons/DeleteButton";
 import UpdateButton from "./TodoButtons/UpdateButton";
@@ -8,19 +9,46 @@ import { useApp } from "@/hooks/useApp";
 import clsx from "clsx";
 
 const TodoItem: React.FC<Todo> = (todoProps) => {
-  const { id, title, description, dueDate, labelId, isCompleted } = todoProps;
+  const { id, title, description, dueDate, labelId, isCompleted, userId } =
+    todoProps;
 
   const appContext = useApp();
   const { todosContext } = appContext;
   const { todos, updateTodo, deleteTodo } = todosContext;
 
-  const toggleCompleted = (updatedId: string) => {
-    const updatedTodo = todos.find((todo) => todo.id === updatedId);
+  const [messageSubmit, setMessageSubmit] = useState({
+    appear: false,
+    error: false,
+    message: "",
+  });
 
-    if (updatedTodo) {
-      updateTodo(updatedId, {
-        ...updatedTodo,
-        isCompleted: !updatedTodo.isCompleted,
+  const toggleCompleted = (updatedId: string) => {
+    try {
+      const updatedTodo = todos.find((todo) => todo.id === updatedId);
+
+      if (updatedTodo) {
+        updateTodo(updatedId, {
+          ...updatedTodo,
+          isCompleted: !updatedTodo.isCompleted,
+        });
+      }
+    } catch (error) {
+      setMessageSubmit({
+        appear: true,
+        error: true,
+        message: (error as Error).message,
+      });
+    }
+  };
+
+  const deleteTodoHandler = (deletedId: string, userId: string) => {
+    try {
+      deleteTodo(deletedId, userId);
+    } catch (error) {
+      setMessageSubmit({
+        appear: true,
+        error: true,
+        message: (error as Error).message,
       });
     }
   };
@@ -37,13 +65,16 @@ const TodoItem: React.FC<Todo> = (todoProps) => {
         />
       </div>
       <div className="todo__wrapper_item_metadata">
+        {messageSubmit.appear && messageSubmit.error && (
+          <p className="color-danger">{messageSubmit.message}</p>
+        )}
         <span className="label">{getLabelNameById(labelId)}</span>
         <p className="text-sm color-secondary">{description}</p>
         <TodoDate isTodoCompleted={isCompleted} todoDueDate={dueDate} />
       </div>
       <div className="todo__wrapper_item_buttons basic-flex">
         <UpdateButton {...todoProps} />
-        <DeleteButton deleteTodo={() => deleteTodo(id)} />
+        <DeleteButton deleteTodo={() => deleteTodoHandler(id, userId)} />
       </div>
     </article>
   );

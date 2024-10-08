@@ -1,24 +1,19 @@
 import { useState } from "react";
 import { useForm } from "@/hooks/useForm";
 import { useApp } from "@/hooks/useApp";
-import { useNavigate } from "react-router-dom";
 
-const RegisterPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const appContext = useApp();
   const { usersContext } = appContext;
-  const { registerUser } = usersContext;
-
-  const navigate = useNavigate();
+  const { loginUser } = usersContext;
 
   const {
     state: userData,
     handleChange: handleUserChange,
     handleReset: handleUserReset,
   } = useForm({
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const [messageSubmit, setMessageSubmit] = useState({
@@ -31,23 +26,17 @@ const RegisterPage: React.FC = () => {
     event.preventDefault();
 
     try {
-      registerUser({
-        name: userData.name,
+      loginUser({
         email: userData.email,
         password: userData.password,
-        confirmPassword: userData.confirmPassword,
       });
 
       setMessageSubmit({
         appear: true,
         error: false,
-        message: "User registered successfully! Redirecting to Login page",
+        message: "Login successful!",
       });
       handleUserReset();
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
     } catch (error) {
       setMessageSubmit({
         appear: true,
@@ -60,25 +49,13 @@ const RegisterPage: React.FC = () => {
   return (
     <div>
       <div className="register__wrapper basic-space-y">
-        <h2>Register User</h2>
+        <h2>Login User</h2>
         {messageSubmit.appear && (
           <p className={messageSubmit.error ? "color-danger" : "color-primary"}>
             {messageSubmit.message}
           </p>
         )}
         <form className="input__form" onSubmit={handleUserFormSubmit}>
-          <div className="input__form_input">
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={userData.name}
-              onChange={handleUserChange}
-              required
-              autoComplete="name"
-            />
-          </div>
           <div className="input__form_input">
             <label htmlFor="email">Email:</label>
             <input
@@ -103,20 +80,8 @@ const RegisterPage: React.FC = () => {
               autoComplete="password"
             />
           </div>
-          <div className="input__form_input">
-            <label htmlFor="confirmPassword">Confirm Password:</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={userData.confirmPassword}
-              onChange={handleUserChange}
-              required
-              autoComplete="confirmPassword"
-            />
-          </div>
           <button type="submit" className="button-basic primary-link-bg">
-            Register
+            Login
           </button>
         </form>
       </div>
@@ -124,4 +89,4 @@ const RegisterPage: React.FC = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

@@ -1,14 +1,20 @@
 import { getUniqueTime } from "../helpers";
-import bcrypt from "bcrypt";
+import { Label, getLabelsStorage, deleteLabelStorage } from "./labels";
+import { Todo, getTodosStorage, deleteTodoStorage } from "./todos";
+import bcrypt from "bcryptjs";
 
-export interface UserMetadata {
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface User {
+  id: string;
   name: string;
   email: string;
   passwordHash: string;
-}
-
-export interface User extends UserMetadata {
-  id: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,14 +25,19 @@ export interface LoginData {
 }
 
 export interface CurrentUser {
-  userId: string;
-  name: string;
-  email: string;
+  loggedIn: boolean;
+  userId?: string;
+  name?: string;
+  email?: string;
 }
 
-interface EmailVerification {
-  status: boolean;
-  message: string;
+function hashPassword(password: string): string {
+  const salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(password, salt);
+}
+
+function comparePassword(password: string, hash: string): boolean {
+  return bcrypt.compareSync(password, hash);
 }
 
 export function getUsersStorage(): User[] {
@@ -37,95 +48,138 @@ export function getUsersStorage(): User[] {
   return item ? JSON.parse(item) : [];
 }
 
-function verifyEmailStorage(email: string, users: User[]): EmailVerification {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function verifyEmailStorage(email: string, users: User[]): void {
+  try {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!emailRegex.test(email)) {
-    return {
-      status: false,
-      message: "Invalid email format",
-    };
-  }
-
-  if (users.some((user: User) => user.email === email)) {
-    return {
-      status: false,
-      message: "Email already exists",
-    };
-  }
-
-  return {
-    status: true,
-    message: "Email is valid",
-  };
-}
-
-export async function addUserStorage(
-  newUserMetadata: UserMetadata
-): Promise<User[]> {
-  const { name, email, passwordHash } = newUserMetadata;
-  const users = getUsersStorage();
-  const emailVerification = verifyEmailStorage(email, users);
-
-  if (!emailVerification.status) {
-    throw new Error(emailVerification.message);
-  }
-
-  const hashed = await bcrypt.hash(passwordHash, 10);
-
-  const newUser = {
-    id: `user-${getUniqueTime()}`,
-    name,
-    email,
-    passwordHash: hashed,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  localStorage.setItem("users", JSON.stringify([...users, newUser]));
-
-  return [...users, newUser];
-}
-
-export function deleteUserStorage(deletedUserId: string): User[] {
-  const users = getUsersStorage().filter(
-    (user: User) => user.id !== deletedUserId
-  );
-
-  localStorage.setItem("users", JSON.stringify(users));
-
-  return users;
-}
-
-export async function loginUserStorage(loginData: LoginData): Promise<User> {
-  const { email, password } = loginData;
-  const users = getUsersStorage();
-  const user = users.find((user: User) => user.email === email);
-
-  if (!user) {
-    throw new Error("Invalid email or password");
-  }
-
-  const currentData = {
-    userId: user.id,
-    name: user.name,
-    email: user.email,
-  };
-
-  const match = await bcrypt.compare(password, user.passwordHash);
-  if (match) {
-    if (localStorage.getItem("currentUser") === null) {
-      localStorage.setItem("currentUser", JSON.stringify(currentData));
+    if (!emailRegex.test(email)) {
+      throw new Error("Invalid email format");
     }
-    const item = localStorage.getItem("currentUser");
-    return item ? JSON.parse(item) : currentData;
-  }
 
-  throw new Error("Invalid email or password");
+    if (users.some((user: User) => user.email === email)) {
+      throw new Error("Email already exists");
+    }
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 }
 
-export function logoutUserStorage(): void {
-  localStorage.removeItem("currentUser");
+export function registerUserStorage(newUserMetadata: RegisterData): User[] {
+  try {
+    const { name, email, password, confirmPassword } = newUserMetadata;
+
+    if (password !== confirmPassword) {
+      throw new Error("Password does not match");
+    }
+
+    const users = getUsersStorage();
+
+    verifyEmailStorage(email, users);
+
+    const hashed = hashPassword(password);
+
+    const newUser = {
+      id: `user-${getUniqueTime()}`,
+      name,
+      email,
+      passwordHash: hashed,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    localStorage.setItem("users", JSON.stringify([...users, newUser]));
+
+    return [...users, newUser];
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}
+
+export function deleteUserStorage(deletedUserId: string): {
+  users: User[];
+  todos: Todo[];
+  labels: Label[];
+} {
+  try {
+    const users = getUsersStorage();
+
+    if (!users.some((user: User) => user.id === deletedUserId)) {
+      throw new Error("User not found");
+    }
+
+    const currentUser = getCurrentUserStorage();
+
+    if (
+      !currentUser ||
+      !currentUser.loggedIn ||
+      currentUser.userId !== deletedUserId
+    ) {
+      throw new Error("Not authorized to delete user");
+    }
+
+    const newUsers = users.filter((user: User) => user.id !== deletedUserId);
+
+    getTodosStorage().forEach((todo: Todo) => {
+      if (todo.userId === deletedUserId) {
+        deleteTodoStorage(todo.id, deletedUserId);
+      }
+    });
+
+    getLabelsStorage().forEach((label: Label) => {
+      if (label.userId === deletedUserId) {
+        deleteLabelStorage(label.id, deletedUserId);
+      }
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    return {
+      users: newUsers,
+      todos: getTodosStorage(),
+      labels: getLabelsStorage(),
+    };
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}
+
+export function loginUserStorage(loginData: LoginData): CurrentUser {
+  try {
+    const { email, password } = loginData;
+
+    const users = getUsersStorage();
+    const user = users.find((user: User) => user.email === email);
+
+    if (!user) {
+      throw new Error("Invalid email or password");
+    }
+
+    const match = comparePassword(password, user.passwordHash);
+    if (match) {
+      const currentData = {
+        loggedIn: true,
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+      };
+
+      localStorage.setItem("currentUser", JSON.stringify(currentData));
+      return currentData;
+    }
+
+    throw new Error("Invalid email or password");
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}
+
+export function logoutUserStorage(): CurrentUser {
+  const logoutItem = {
+    loggedIn: false,
+  };
+  localStorage.setItem("currentUser", JSON.stringify(logoutItem));
+
+  return logoutItem;
 }
 
 export function checkLoginStorage(): CurrentUser {
@@ -138,6 +192,7 @@ export function checkLoginStorage(): CurrentUser {
 
     if (verifyUsers) {
       return {
+        loggedIn: true,
         userId: verifyUsers.id,
         name: verifyUsers.name,
         email: verifyUsers.email,
@@ -151,9 +206,10 @@ export function checkLoginStorage(): CurrentUser {
 export function getCurrentUserStorage(): CurrentUser {
   const item = localStorage.getItem("currentUser");
 
-  if (item) {
+  if (!item) {
+    localStorage.setItem("currentUser", JSON.stringify({ loggedIn: false }));
+    return { loggedIn: false };
+  } else {
     return JSON.parse(item);
   }
-
-  throw new Error("User not found");
 }

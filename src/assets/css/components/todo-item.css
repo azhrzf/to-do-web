@@ -60,9 +60,6 @@
   border-radius: 15px;
 }
 
-.todo__wrapper_item * {
-  word-break: break-word;
-}
 
 .todo__wrapper_item > * + * {
   margin-top: 10px;

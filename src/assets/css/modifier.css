@@ -56,7 +56,6 @@
   transition-duration: 0.3s;
   transition-timing-function: linear;
   text-decoration: none;
-
 }
 
 .danger-link:hover {
@@ -128,3 +127,6 @@
   text-decoration: none;
 }
 
+.break-words {
+  word-break: break-word;
+}

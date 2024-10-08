@@ -3,27 +3,21 @@ import AddTodo from "@/components/AddTodo";
 import { useState, useEffect } from "react";
 import { useApp } from "@/hooks/useApp";
 import { IoMdAddCircle } from "react-icons/io";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import TodoItem from "@/components/TodoItem";
 import { getTodosByUserId } from "@/utils/storage/todos";
 import { getLabelNameById } from "@/utils/storage/labels";
 import AddLabel from "@/components/AddLabel";
-import UpdateLabel from "@/components/UpdateLabel";
+import { useInput } from "@/hooks/useInput";
+import SearchTodo from "./SearchTodo";
+import TodoItem from "@/components/TodoItem";
+import SelectLabel from "./LabelHandler/SelectLabel";
+import UpdateButton from "./LabelHandler/UpdateButton";
+import DeleteButton from "./LabelHandler/DeleteButton";
 
 const AddConfig: React.FC = () => {
   return (
     <div className="button-basic primary-link-bg basic-flex-middle">
       <IoMdAddCircle />
       <p>Add To do</p>
-    </div>
-  );
-};
-
-const UpdateConfig: React.FC = () => {
-  return (
-    <div className="button-basic primary-link-bg basic-flex-middle">
-      <FaEdit />
-      <p>Update Label</p>
     </div>
   );
 };
@@ -57,13 +51,10 @@ const TodoPage: React.FC = () => {
     getTodosByUserId(todos, currentUser.userId)
   );
 
-  const [searchValue, setSearchValue] = useState("");
   const todosInProgres = usedTodos.filter((todo) => !todo.isCompleted);
   const todosCompleted = usedTodos.filter((todo) => todo.isCompleted);
 
-  const handleTodosSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  };
+  const { value: searchValue, handleChange: handleTodosSearch } = useInput("");
 
   const handleDeleteLabel = () => {
     if (currentUser.userId) {
@@ -93,59 +84,26 @@ const TodoPage: React.FC = () => {
       <h2 className="todo__welcome">Welcome, {currentUser.name}</h2>
       <div className="basic-space-y">
         <div className="todo__tools">
-          <div className="input__form_input">
-            <label htmlFor="search">Search:</label>
-            <input
-              type="text"
-              placeholder="🔍 Search..."
-              onChange={handleTodosSearch}
-              name="search"
-              id="search"
-            />
-          </div>
-          <div className="input__form_input">
-            <label htmlFor="label-select">Select label:</label>
-            <select
-              name="labelId"
-              id="label-select"
-              value={selectedLabel}
-              onChange={handleLabelChange}
-            >
-              <option value="">- All Labels -</option>
-              {verifiedLabels.map((label) => {
-                return (
-                  <option key={label.id} value={label.id}>
-                    {label.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+          <SearchTodo
+            searchValue={searchValue}
+            handleTodosSearch={handleTodosSearch}
+          />
+          <SelectLabel
+            selectedLabel={selectedLabel}
+            handleLabelChange={handleLabelChange}
+            verifiedLabels={verifiedLabels}
+          />
         </div>
         <div className="todo__tools_second">
           <div className="todo__tools_second_label">
             <AddLabel setSelectedLabel={setSelectedLabel} />
           </div>
+          {selectedLabel && <UpdateButton selectedLabel={selectedLabel} />}
           {selectedLabel && (
-            <div className="input__form_input">
-              <p>Update label?</p>
-              <DialogWrapper buttonConfig={<UpdateConfig />}>
-                <UpdateLabel labelId={selectedLabel} />
-              </DialogWrapper>
-            </div>
-          )}
-          {selectedLabel && (
-            <div className="input__form_input">
-              <p>Delete label?</p>
-              <button
-                type="button"
-                className="basic-flex-middle button-basic danger-link-bg"
-                onClick={handleDeleteLabel}
-              >
-                <FaTrashAlt />
-                <p>Delete {getLabelNameById(selectedLabel)}</p>
-              </button>
-            </div>
+            <DeleteButton
+              selectedLabel={selectedLabel}
+              handleDeleteLabel={handleDeleteLabel}
+            />
           )}
         </div>
         <div className="todo__tools_second">

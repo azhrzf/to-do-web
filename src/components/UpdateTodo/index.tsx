@@ -20,6 +20,8 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
       : "",
   });
 
+  const verifiedLabels = labels.filter((label) => label.userId === currentUser.userId);
+
   const [selectedLabel, setSelectedLabel] = useState(updatedTodoProps.labelId);
 
   const handleLabelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -113,7 +115,7 @@ const UpdateTodo: React.FC<Todo> = (updatedTodoProps) => {
               onChange={handleLabelChange}
             >
               <option value="">--No Label--</option>
-              {labels.map((label) => {
+              {verifiedLabels.map((label) => {
                 return (
                   <option key={label.id} value={label.id}>
                     {label.name}

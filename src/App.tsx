@@ -3,11 +3,11 @@ import "@fontsource/nunito-sans/900.css";
 import { AppProvider } from "./context/AppContext";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import HomePage from "./pages/HomePage.tsx";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 
-export default function App() {
+const App: React.FC = () => {
   return (
     <AppProvider>
       <BrowserRouter>
@@ -22,4 +22,6 @@ export default function App() {
       </BrowserRouter>
     </AppProvider>
   );
-}
+};
+
+export default App;

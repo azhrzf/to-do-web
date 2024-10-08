@@ -3,7 +3,7 @@ import UpdateTodo from "@/components/UpdateTodo";
 import DialogWrapper from "@/components/DialogWrapper";
 import { Todo } from "@/utils/storage/todos";
 
-const EditConfig: React.FC = () => {
+const UpdateConfig: React.FC = () => {
   return (
     <div className="button-reset primary-link">
       <FaEdit />
@@ -11,12 +11,12 @@ const EditConfig: React.FC = () => {
   );
 };
 
-const EditButton: React.FC<Todo> = ({ ...updatedTodo }) => {
+const UpdateButton: React.FC<Todo> = ({ ...updatedTodo }) => {
   return (
-    <DialogWrapper buttonConfig={<EditConfig />}>
+    <DialogWrapper buttonConfig={<UpdateConfig />}>
       <UpdateTodo {...updatedTodo} />
     </DialogWrapper>
   );
 };
 
-export default EditButton;
+export default UpdateButton;

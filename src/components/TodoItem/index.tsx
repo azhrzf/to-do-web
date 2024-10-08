@@ -56,7 +56,7 @@ const TodoItem: React.FC<Todo> = (todoProps) => {
   return (
     <article className="todo__wrapper_item">
       <div className="todo__wrapper_item_checkbox">
-        <h3 className={clsx("text-xl", isCompleted && "line-through")}>
+        <h3 className={clsx("text-xl break-words", isCompleted && "line-through")}>
           {title}
         </h3>
         <TodoToggle
@@ -69,7 +69,7 @@ const TodoItem: React.FC<Todo> = (todoProps) => {
           <p className="color-danger">{messageSubmit.message}</p>
         )}
         <span className="label">{getLabelNameById(labelId)}</span>
-        <p className="text-sm color-secondary">{description}</p>
+        <p className="text-sm color-secondary break-words">{description}</p>
         <TodoDate isTodoCompleted={isCompleted} todoDueDate={dueDate} />
       </div>
       <div className="todo__wrapper_item_buttons basic-flex">

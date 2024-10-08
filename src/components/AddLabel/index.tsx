@@ -80,7 +80,7 @@ const AddLabel: React.FC<AddLabelProps> = ({ setSelectedLabel }) => {
           )}
           onClick={() => setShowAddLabel((prevState) => !prevState)}
         >
-          <div className="basic-flex-middle">
+          <div className="no-break basic-flex-middle">
             {showAddLabel ? (
               <>
                 <IoMdCloseCircle />

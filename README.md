@@ -1,50 +1,64 @@
-# React + TypeScript + Vite
+# To-Do Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a single-page application (SPA) built using **React** and **Vite** for managing to-do lists. The application allows users to add, edit, and delete to-dos, manage labels for each to-do, and features secure authentication with password hashing. User data and to-dos are stored using the browser's **local storage**, ensuring that tasks persist even after page refresh or browser closure.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Add, edit, and delete to-dos.
+- Metadata in the form of title, completed, due date, label, and description.
+- Authentication, secure login using password hashing to protect user credentials.
+- Add, edit, and delete labels for to-dos to organize tasks efficiently.
+- Stores user data and tasks locally on the browser to persist across sessions.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: A JavaScript library for building user interfaces.
+- **Vite**: A fast development build tool optimized for React applications.
 
-- Configure the top-level `parserOptions` property like this:
+## Installation and Setup
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+To get started with the To-Do Web App, follow the steps below:
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Prerequisites
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Ensure you have **Node.js** and **npm** (Node Package Manager) installed on your machine. You can download Node.js from [here](https://nodejs.org/).
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Steps
+
+1. **Clone the repository**:
+
+   ```bash
+    git clone https://github.com/azhrzf/to-do-web.git
+   ```
+
+2. **Navigate to the project directory:**
+
+   ```bash
+    cd to-do-web
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+    npm install
+   ```
+
+4. **Build for production:**
+
+   Because the build folder already exists, which is dist. So you can immediately preview it. However, it is still recommended to do a rebuild.
+
+   ```bash
+   npm run build
+   ```
+
+5. **Preview the production build:**
+
+   ```bash
+   npm run preview
+   ```
+
+### Visit the launched site here
+
+[todo-azhrzf.netlify.app](https://todo-azhrzf.netlify.app/).
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0f4a1103-3bb7-459d-94a9-c1918449ec14/deploy-status)](https://app.netlify.com/sites/todo-azhrzf/deploys)
